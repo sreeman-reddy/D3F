@@ -34,7 +34,7 @@ st.title("Drowsiness Detection")
 #     WAIT_TIME = st.slider("Seconds to wait before sounding alarm:", 0.0, 5.0, 1.0, 0.25)
  
 thresholds = {
-    "EAR_THRESH": 0.18
+    "EAR_THRESH": 0.18,
     "WAIT_TIME": 1.0,
 }
  
