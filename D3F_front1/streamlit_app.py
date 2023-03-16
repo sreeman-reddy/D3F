@@ -27,19 +27,19 @@ st.set_page_config(
  
 st.title("Drowsiness Detection!")
  
-col1, col2 = st.columns(spec=[1, 1])
+# col1, col2 = st.columns(spec=[1, 1])
  
-with col1:
-    # Lowest valid value of Eye Aspect Ratio. Ideal values [0.15, 0.2].
-    EAR_THRESH = st.slider("Eye Aspect Ratio threshold:", 0.0, 0.4, 0.18, 0.01)
+# with col1:
+#     # Lowest valid value of Eye Aspect Ratio. Ideal values [0.15, 0.2].
+#     EAR_THRESH = st.slider("Eye Aspect Ratio threshold:", 0.0, 0.4, 0.18, 0.01)
  
-with col2:
-    # The amount of time (in seconds) to wait before sounding the alarm.
-    WAIT_TIME = st.slider("Seconds to wait before sounding alarm:", 0.0, 5.0, 1.0, 0.25)
+# with col2:
+#     # The amount of time (in seconds) to wait before sounding the alarm.
+#     WAIT_TIME = st.slider("Seconds to wait before sounding alarm:", 0.0, 5.0, 1.0, 0.25)
  
 thresholds = {
-    "EAR_THRESH": EAR_THRESH,
-    "WAIT_TIME": WAIT_TIME,
+    "EAR_THRESH": 0.18,
+    "WAIT_TIME": 1.0,
 }
  
 # For streamlit-webrtc
