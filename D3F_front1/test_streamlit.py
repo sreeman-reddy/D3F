@@ -13,30 +13,29 @@ alarm_file_path = os.path.join(path,"audio", "wake_up.wav")
  
 # Streamlit Components
 st.set_page_config(
-    page_title="Drowsiness Detection | LearnOpenCV",
-    page_icon="https://learnopencv.com/wp-content/uploads/2017/12/favicon.png",
+    page_title="Drowsiness Detection",
     layout="centered",
     initial_sidebar_state="expanded",
     menu_items={
-        "About": "### Visit www.learnopencv.com for more exciting tutorials!!!",
+        "About": "Drowsy Driver Detection and Feedback (D3F)",
     },
 )
  
-st.title("Drowsiness Detection!")
+st.title("Drowsiness Detection")
  
-col1, col2 = st.columns(spec=[1, 1])
+# col1, col2 = st.columns(spec=[1, 1])
  
-with col1:
-    # Lowest valid value of Eye Aspect Ratio. Ideal values [0.15, 0.2].
-    EAR_THRESH = st.slider("Eye Aspect Ratio threshold:", 0.0, 0.4, 0.18, 0.01)
+# with col1:
+#     # Lowest valid value of Eye Aspect Ratio. Ideal values [0.15, 0.2].
+#     EAR_THRESH = st.slider("Eye Aspect Ratio threshold:", 0.0, 0.4, 0.18, 0.01)
  
-with col2:
-    # The amount of time (in seconds) to wait before sounding the alarm.
-    WAIT_TIME = st.slider("Seconds to wait before sounding alarm:", 0.0, 5.0, 1.0, 0.25)
+# with col2:
+#     # The amount of time (in seconds) to wait before sounding the alarm.
+#     WAIT_TIME = st.slider("Seconds to wait before sounding alarm:", 0.0, 5.0, 1.0, 0.25)
  
 thresholds = {
-    "EAR_THRESH": EAR_THRESH,
-    "WAIT_TIME": WAIT_TIME,
+    "EAR_THRESH": 0.18
+    "WAIT_TIME": 1.0,
 }
  
 # For streamlit-webrtc
