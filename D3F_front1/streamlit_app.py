@@ -16,12 +16,11 @@ alarm_file_path = os.path.join(path,"audio", "wake_up.wav")
  
 # Streamlit Components
 st.set_page_config(
-    page_title="Drowsiness Detection | LearnOpenCV",
-    page_icon="https://learnopencv.com/wp-content/uploads/2017/12/favicon.png",
+    page_title="D3F",
     layout="centered",
     initial_sidebar_state="expanded",
     menu_items={
-        "About": "### Visit www.learnopencv.com for more exciting tutorials!!!",
+        "About": "Driver Drowsiness Detection and Feedback (D3F)",
     },
 )
  
