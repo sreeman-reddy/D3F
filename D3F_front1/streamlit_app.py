@@ -38,7 +38,7 @@ st.title("Drowsiness Detection!")
  
 thresholds = {
     "EAR_THRESH": 0.18,
-    "WAIT_TIME": 1.0,
+    "WAIT_TIME": 4.0,
 }
  
 # For streamlit-webrtc
@@ -72,6 +72,6 @@ ctx = webrtc_streamer(
     video_frame_callback=video_frame_callback,
     audio_frame_callback=audio_frame_callback,
     rtc_configuration={"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]},
-    media_stream_constraints={"video": {"width": True, "audio": True}},
+#     media_stream_constraints={"video": {"width": True, "audio": True}},
     video_html_attrs=VideoHTMLAttributes(autoPlay=True, controls=False, muted=False),
 )
