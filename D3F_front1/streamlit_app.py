@@ -64,8 +64,7 @@ def audio_frame_callback(frame: av.AudioFrame):
     with lock:  # access the current “play_alarm” state
         play_alarm = shared_state["play_alarm"]
  
-    new_frame: av.AudioFrame = audio_handler.process(frame,
-                                                     play_sound=play_alarm)
+    new_frame: av.AudioFrame = audio_handler.process(frame, play_sound=play_alarm)
     return new_frame
  
 ctx = webrtc_streamer(
