@@ -3,7 +3,7 @@ import av
 import pandas as pd
 import threading
 import streamlit as st
-import datetime
+#import datetime
 #import streamlit_nested_layout
 import pymysql
 from streamlit_webrtc import VideoHTMLAttributes, webrtc_streamer
@@ -23,7 +23,7 @@ db_credentials = {
 
 thresholds = {
         "EAR_THRESH": 0.18,
-        "MAR_THRESH": 1.00,
+        "MAR_THRESH": 0.90,
         "WAIT_TIME": 4.0
     }
 
@@ -50,8 +50,8 @@ def get_table_names():
         minute = table[15:17]
         second = table[17:19]
         formatted_table = f"Trip {month}/{day}/{year} {hour}:{minute}:{second}"
-        formatted_tables.insert(0,formatted_table)
-
+        formatted_tables.append(formatted_table)
+    
     return dict(zip(formatted_tables,tables))
 
 def load_data_from_table(table_name):
@@ -78,7 +78,7 @@ def delete_table(table_name):
 
 def create_dashboard(data):
     # Convert the timestamp to a pandas datetime object
-    data['timestamp'] = pd.to_datetime(data['timestamp'], unit='s').dt.strftime('%H:%M:%S.%f')
+    data['timestamp'] = pd.to_datetime(data['timestamp'], unit='s').dt.tz_localize('UTC').dt.tz_convert('US/Eastern').dt.strftime('%H:%M:%S.%f')
 
     # EAR time series plot
     fig_ear = px.line(data, x='timestamp', y='EAR', title='Eye Aspect Ratio (EAR) over Time')
@@ -320,6 +320,7 @@ def page2():
         st.session_state.p3 = True
         st.session_state.main_state = False
         st.session_state.p2 = False
+        st.experimental_rerun()
 
     if st.button("Return Home", key="p2_to_main"):
         delete_table(st.session_state['curr_table_name'])
