@@ -2,6 +2,7 @@ cryptography
 pyOpenSSL
 aiortc
 numpy
+pandas
 pydub
 mediapipe
 streamlit
