@@ -21,12 +21,14 @@ db_credentials = {
     "database": "d3f",
 }
 
+#Change threshold values if needed 
 thresholds = {
         "EAR_THRESH": 0.18,
         "MAR_THRESH": 0.90,
         "WAIT_TIME": 4.0
     }
 
+#function to get tables names for the drop down menu
 def get_table_names():
     connection = pymysql.connect(**db_credentials, cursorclass=DictCursor)
     try:
@@ -54,6 +56,8 @@ def get_table_names():
     
     return dict(zip(formatted_tables,tables))
 
+
+#function to load data from table elected from the drop down menu
 def load_data_from_table(table_name):
     connection = pymysql.connect(**db_credentials, cursorclass=DictCursor)
     try:
@@ -66,6 +70,8 @@ def load_data_from_table(table_name):
 
     return pd.DataFrame(data)
 
+
+#function to delete table from backend database
 def delete_table(table_name):
     connection = pymysql.connect(**db_credentials, cursorclass=DictCursor)
     try:
@@ -76,6 +82,8 @@ def delete_table(table_name):
     finally:
         connection.close()
 
+
+#function for creating the dashboard using data from the selected table
 def create_dashboard(data):
     # Convert the timestamp to a pandas datetime object
     data['timestamp'] = pd.to_datetime(data['timestamp'], unit='s').dt.tz_localize('UTC').dt.tz_convert('US/Eastern').dt.strftime('%H:%M:%S.%f')
@@ -84,22 +92,11 @@ def create_dashboard(data):
     fig_ear = px.line(data, x='timestamp', y='EAR', title='Eye Aspect Ratio (EAR) over Time')
     fig_ear.add_trace(go.Scatter(x=data['timestamp'], y=[thresholds["EAR_THRESH"]]*len(data), mode='lines', name='Threshold'))
     st.plotly_chart(fig_ear)
-    # fig_ear= go.Figure()
-    # fig_ear.add_scattergl(x=data["timestamp"],y=[thresholds["EAR_THRESH"] for i in range(len(data))], line={'color': 'white'})
-    # fig_ear.add_scattergl(x=data["timestamp"],y=data["EAR"], line={'color': 'green'})
-    # fig_ear.add_scattergl(x=data["timestamp"],y=data["EAR"].where(data["EAR"] <= thresholds["EAR_THRESH"]), line={'color':'red'})
-    #st.plotly_chart(fig_ear)
-
     
     # MAR time series plot
     fig_mar = px.line(data, x='timestamp', y='MAR', title='Mouth Aspect Ratio (MAR) over Time')
     fig_mar.add_trace(go.Scatter(x=data['timestamp'], y=[thresholds["MAR_THRESH"]]*len(data), mode='lines', name='Threshold'))
     st.plotly_chart(fig_mar)
-    # fig_mar= go.Figure()
-    # fig_mar.add_scattergl(x=data["timestamp"],y=[thresholds["MAR_THRESH"] for i in range(len(data))], line={'color': 'white'})
-    # fig_mar.add_scattergl(x=data["timestamp"],y=data["MAR"], line={'color': 'red'})
-    # fig_mar.add_scattergl(x=data["timestamp"],y=data["MAR"].where(data["MAR"] <= thresholds["MAR_THRESH"]), line={'color':'green'})
-    #st.plotly_chart(fig_mar)
 
     # Alarm_behaviour time series plot
     fig_alarm = px.line(data, x='timestamp', y='alarm_on', title='Alarm Behaviour over Time')
@@ -115,7 +112,7 @@ def create_dashboard(data):
     st.write(f"Alarm triggered {data['alarm_counter'].max()} times during the trip")
 
 
-
+#function for creating a backend database based on the credentials in the db_credentials dictionary
 def create_database(db_name):
     credentials= {"host": db_credentials["host"], "user": db_credentials["user"], "password": db_credentials["password"]}
     connection = pymysql.connect(**credentials, cursorclass=DictCursor)
@@ -127,7 +124,8 @@ def create_database(db_name):
     finally:
         connection.close()
 
-#def create_table_and_insert_data(df):
+
+#Function for creating a new table to collect trip data
 def create_table():
     connection = pymysql.connect(**db_credentials, cursorclass=DictCursor)
     try:
@@ -149,15 +147,6 @@ def create_table():
             cursor.execute(sql_create)
             connection.commit()
 
-            # # Insert data from the DataFrame into the table
-            # for _, row in df.iterrows():
-                # sql_insert = f"""
-                # INSERT INTO {table_name}
-                # (timestamp, EAR, MAR, eye_shut_counter, yawn_counter, alarm_counter, alarm_on)
-                # VALUES (%s, %s, %s, %s, %s, %s, %s)
-                # """
-            #     cursor.execute(sql_insert, row.to_list())
-            #     connection.commit()
     finally:
         connection.close()
     
@@ -167,11 +156,6 @@ def create_table():
 # Define the audio file to use.
 path = os.path.dirname(__file__)
 alarm_file_path = os.path.join(path,"audio", "wake_up.wav")
-
-# Define pandas database that will be relayed to the backend MySQL database.
-#drwsy_df=pd.DataFrame(columns=['timestamp', 'EAR', 'MAR', 'eye_shut_counter', 'yawn_counter', 'alarm_on'])
-# if 'drwsy' not in st.session_state:
-#         st.session_state['drwsy'] = pd.DataFrame(columns=['timestamp', 'EAR', 'MAR', 'eye_shut_counter', 'yawn_counter', 'alarm_on'])
 
 
 # Streamlit Components
@@ -184,10 +168,7 @@ st.set_page_config(
     },
 )
 
-# if 'drwsy' not in st.session_state:
-#         #st.session_state['drwsy'] = [pd.DataFrame(columns=['timestamp', 'EAR', 'MAR', 'eye_shut_counter', 'yawn_counter', 'alarm_counter', 'alarm_on'])]
-#         st.session_state['drwsy'] = []
-
+# preserving important variables for the duration of the session
 if "main_state" not in st.session_state:
     st.session_state.main_state = True
 
@@ -203,6 +184,8 @@ if "curr_table_name" not in st.session_state:
 if "selected" not in st.session_state:
     st.session_state.selected = str()
 
+
+#Home page for d3f.io app
 def main():
     st.title("D3F.io")
     st.subheader("Driver Drowsiness Detection and Feedback")
@@ -224,22 +207,10 @@ def main():
         st.session_state.p2 = False
         st.experimental_rerun()
 
-
+#page containing the real time feedback system
 def page2():
 
     st.title("Drowsiness Detection")
-    
-    
-    # col1, col2 = st.columns(spec=[1, 1])
-    
-    # with col1:
-    #     # Lowest valid value of Eye Aspect Ratio. Ideal values [0.15, 0.2].
-    #     EAR_THRESH = st.slider("Eye Aspect Ratio threshold:", 0.0, 0.4, 0.18, 0.01)
-    
-    # with col2:
-    #     # The amount of time (in seconds) to wait before sounding the alarm.
-    #     WAIT_TIME = st.slider("Seconds to wait before sounding alarm:", 0.0, 5.0, 1.0, 0.25)
-    
     
     # For streamlit-webrtc
     video_handler = VideoFrameHandler()
@@ -248,20 +219,17 @@ def page2():
     # For thread-safe access & to prevent race-condition.
     lock = threading.Lock()  
     
-    #shared_state = {"play_alarm": False, "drwsy_df":pd.DataFrame(columns=['timestamp', 'EAR', 'MAR', 'eye_shut_counter', 'yawn_counter', 'alarm_on'])}
-    
-    #connection = pymysql.connect(**db_credentials, cursorclass=DictCursor)
+    #dictionary to pass necessary data between frames using threading.lock()
     shared_state = {"play_alarm": False, "connection": pymysql.connect(**db_credentials, cursorclass=DictCursor), "table_name": st.session_state.curr_table_name}
     
     def video_frame_callback(frame: av.VideoFrame):
         frame = frame.to_ndarray(format="bgr24")  # Decode and convert frame to RGB
-        #frame, play_alarm, row_dict = video_handler.process(frame, thresholds)  # Process frame
         frame, play_alarm = video_handler.process(frame, thresholds)  # Process frame
 
         with lock:
             shared_state["play_alarm"] = play_alarm  # Update shared state
-            #shared_state['drwsy_df'] = pd.concat([shared_state['drwsy_df'], pd.DataFrame.from_records([row_dict])], ignore_index=True)
-            #shared_state['drwsy_df'] = row_dict
+            
+            #insert data into mysql table
             if video_handler.row_dict:
                 sql_insert = f"""
                     INSERT INTO {shared_state["table_name"]}
@@ -281,7 +249,7 @@ def page2():
         new_frame: av.AudioFrame = audio_handler.process(frame, play_sound=play_alarm)
         return new_frame
 
-    # try:
+
     with shared_state["connection"].cursor():    
         ctx = webrtc_streamer(
             key="driver-drowsiness-detection",
@@ -291,32 +259,10 @@ def page2():
             #media_stream_constraints={"video": {"width": True, "audio": True}},
             video_html_attrs=VideoHTMLAttributes(autoPlay=True, controls=False, muted=False)
         )
-    # finally:
-    #     connection.close()
-    # try:
-    #     while ctx.state.playing:
-    #         with lock:
-    #             row_dict = video_handler.row_dict
-    #             row_dict_prev = video_handler.row_dict_prev
-    #         if row_dict is None:
-    #             continue
-    #         elif row_dict:
-    #             if row_dict != row_dict_prev:
-    #                 #st.session_state['drwsy'] = pd.concat([st.session_state['drwsy'], pd.DataFrame.from_records([row_dict])], ignore_index=True)
-    #                 #st.session_state['drwsy'].append(row_dict)
-    #                 #print('bruh')
-    #                 pass
-    # except KeyError:
-    #     pass
+
 
     if st.button("End Trip") or st.session_state.p3:
         shared_state["connection"].close()
-        # Send the data in the dataframe df to the MySQL database
-        # create_table_and_insert_data(shared_state['drwsy_df'])
-        #create_table_and_insert_data(st.session_state['drwsy'])
-        #create_table_and_insert_data(pd.DataFrame.from_records(st.session_state['drwsy']))
-        # page3(video_handler.df)
-        # page3(video_handler.getdf())
         st.session_state.p3 = True
         st.session_state.main_state = False
         st.session_state.p2 = False
@@ -329,6 +275,7 @@ def page2():
         st.session_state.p3 = False
         st.experimental_rerun()
 
+#page containing the interactive dashboard
 def page3():
     st.title("Trip Information")
     
