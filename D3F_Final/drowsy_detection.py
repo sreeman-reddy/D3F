@@ -1,7 +1,7 @@
 import cv2
 import time
 import numpy as np
-#import pandas as pd
+import pandas as pd
 import mediapipe as mp
 import time
 #import datetime
@@ -105,15 +105,6 @@ def get_mar(landmarks, refer_idxs, frame_width, frame_height):
     return mar, coords_points
 
 
-# def calculate_avg_ear(landmarks, left_eye_idxs, right_eye_idxs, image_w, image_h):
-#     # Calculate Eye aspect ratio
-
-#     left_ear, left_lm_coordinates = get_ear(landmarks, left_eye_idxs, image_w, image_h)
-#     right_ear, right_lm_coordinates = get_ear(landmarks, right_eye_idxs, image_w, image_h)
-#     Avg_EAR = (left_ear + right_ear) / 2.0
-
-#     return Avg_EAR, (left_lm_coordinates, right_lm_coordinates)
-
 def calculate_ear_mar(landmarks, left_eye_idxs, right_eye_idxs, mouth_idxs, image_w, image_h):
     # Calculate Eye aspect ratio
     left_ear, left_lm_coordinates = get_ear(landmarks, left_eye_idxs, image_w, image_h)
@@ -172,24 +163,13 @@ class VideoFrameHandler:
         }
 
         self.EAR_txt_pos = (10, 30)
-        
         self.MAR_txt_pos = (10, 60)
-
         self.eye_shut_counter = 0
-        
         self.yawn_counter = 0
-
         self.alarm_counter = 0
-
         self.yawn_flag = False
-
         self.eye_shut_flag = False
-
         self.alarm_flag = False
-        
-        #self.df = pd.DataFrame(columns=['timestamp', 'EAR', 'MAR', 'eye_shut_counter', 'yawn_counter', 'alarm_counter' ,'alarm_on'])
-        #self.row_dict_prev = {}
-        
         self.row_dict = {}
 
     def process(self, frame: np.array, thresholds: dict):
@@ -217,9 +197,6 @@ class VideoFrameHandler:
         results = self.facemesh_model.process(frame)
 
         if results.multi_face_landmarks:
-            # landmarks = results.multi_face_landmarks[0].landmark
-            # EAR, coordinates = calculate_avg_ear(landmarks, self.eye_idxs["left"], self.eye_idxs["right"], frame_w, frame_h)
-            # frame = plot_eye_landmarks(frame, coordinates[0], coordinates[1], self.state_tracker["COLOR"])
             landmarks = results.multi_face_landmarks[0].landmark
             EAR, MAR, coordinates = calculate_ear_mar(landmarks, self.eye_idxs["left"], self.eye_idxs["right"], self.mouth_idxs["mouth"], frame_w, frame_h)
             frame = plot_landmarks(frame, coordinates[0], coordinates[1], coordinates[2], self.state_tracker["COLOR"])
@@ -269,12 +246,9 @@ class VideoFrameHandler:
             plot_text(frame, DROWSY_TIME_txt, DROWSY_TIME_txt_pos, self.state_tracker["COLOR"])
 
             # Save the information to a pandas dataframe
-            #current_time = datetime.datetime.now()
+            # current_time = datetime.datetime.now()
             current_time=time.time()
             alarm_on = self.state_tracker["play_alarm"]
-            #self.df = pd.concat([self.df, pd.DataFrame.from_records([{"timestamp": current_time, "EAR": EAR, "MAR": MAR, "eye_shut_counter": self.eye_shut_counter, "yawn_counter": self.yawn_counter,"alarm_counter": self.alarm_counter, "alarm_on": alarm_on}])], ignore_index=True)
-            
-            #self.row_dict_prev=self.row_dict
 
             self.row_dict={"timestamp": current_time, "EAR": EAR, "MAR": MAR, "eye_shut_counter": self.eye_shut_counter, "yawn_counter": self.yawn_counter, "alarm_counter": self.alarm_counter , "alarm_on": alarm_on}
 
@@ -288,5 +262,4 @@ class VideoFrameHandler:
             # Flip the frame horizontally for a selfie-view display.
             frame = cv2.flip(frame, 1)
 
-        #return frame, self.state_tracker["play_alarm"] , {"timestamp": current_time, "EAR": EAR, "MAR": MAR, "eye_shut_counter": self.eye_shut_counter, "yawn_counter": self.yawn_counter, "alarm_on": alarm_on}
         return frame, self.state_tracker["play_alarm"] 
