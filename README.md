@@ -1,0 +1,3 @@
+Driver Drowsiness Detection and Feedback (D3F)
+
+This app analyses facial landmarks to detect if the driver of the vehicle is drowsy/distracted and promptly alerts them. It uses Google's MediaPipe library to capture facial features, which are then processed to detect if the driver's eyes are distracted or drowsy, and also if the driver is yawning excessively. Based on these metrics, the app sounds an alarm to alert the driver. The app metrics are also preserved in a MySQL database and are utilized by a Ride summary dashboard shown to the driver at the end of the trip. The frontend is made using Streamlit, and the backend is housed in a MySQL database. 
