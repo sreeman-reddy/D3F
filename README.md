@@ -18,7 +18,7 @@ Trip UI (Facial tracking):
 
 ![alt text](https://github.com/sreeman-reddy/D3F/blob/main/example3.jpg "tripUI")
 
-Trip UI (drowsiness detected):
+Trip UI when drowsiness or a yawn is detected (Both in this case):
 
 ![alt text](https://github.com/sreeman-reddy/D3F/blob/main/example4.jpg "tripUI drowsy")
 
