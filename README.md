@@ -7,18 +7,23 @@ The final iteration of the project is contained in the D3F_Final directory
 The following screenshots show what the app's UI looks like:
 
 Main page:
+
 ![alt text](https://github.com/sreeman-reddy/D3F/blob/main/example1.jpg "main screen")
 
 Previous Trips page:
+
 ![alt text](https://github.com/sreeman-reddy/D3F/blob/main/example2.jpg "trip info")
 
 Trip UI (Facial tracking):
+
 ![alt text](https://github.com/sreeman-reddy/D3F/blob/main/example3.jpg "tripUI")
 
 Trip UI (drowsiness detected):
+
 ![alt text](https://github.com/sreeman-reddy/D3F/blob/main/example4.jpg "tripUI drowsy")
 
 Post Trip analysis:
+
 ![alt text](https://github.com/sreeman-reddy/D3F/blob/main/example5.jpg "post trip 1")
 
 ![alt text](https://github.com/sreeman-reddy/D3F/blob/main/example6.jpg "post trip 2")
